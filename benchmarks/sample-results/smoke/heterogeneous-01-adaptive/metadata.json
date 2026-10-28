@@ -1,0 +1,16 @@
+{
+  "algorithm": "adaptive",
+  "scenario": "heterogeneous",
+  "repetition": 1,
+  "ordinal": 5,
+  "seed": 43,
+  "rate": 300,
+  "duration": 6,
+  "warmup": 2,
+  "platform": "macOS-15.7.4-arm64-arm-64bit-Mach-O",
+  "cpu_count": 8,
+  "k6_version": "k6 v1.0.0 (commit/41b4984b75, go1.24.2, darwin/arm64)",
+  "go_version": "go version go1.27.3 darwin/arm64",
+  "started_utc": "2026-10-28T02:58:50Z",
+  "completed": true
+}

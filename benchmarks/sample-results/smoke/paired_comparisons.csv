@@ -1,0 +1,13 @@
+scenario,baseline,metric,n,adaptive_minus_baseline,ci95_low,ci95_high
+heterogeneous,round_robin,p95_ms,2,-23.022025000000404,-27.859850000000797,-18.18420000000001
+heterogeneous,round_robin,p99_ms,2,-3.6306050000000027,-4.172319999999999,-3.0888900000000064
+heterogeneous,round_robin,rps,2,0.32911567211954207,0.293720345200029,0.36451099903905515
+heterogeneous,round_robin,error_rate,2,0.0,0.0,0.0
+heterogeneous,least_connections,p95_ms,2,-18.464725000000403,-23.8672500000008,-13.062200000000004
+heterogeneous,least_connections,p99_ms,2,-3.029449999999997,-3.787009999999995,-2.271889999999999
+heterogeneous,least_connections,rps,2,-0.7896445009653235,-1.417801483096241,-0.16148751883440582
+heterogeneous,least_connections,error_rate,2,0.0,0.0,0.0
+heterogeneous,weighted_round_robin,p95_ms,2,-23.6497000000004,-28.42515000000079,-18.87425000000001
+heterogeneous,weighted_round_robin,p99_ms,2,-3.532005000000005,-4.044020000000003,-3.019990000000007
+heterogeneous,weighted_round_robin,rps,2,0.4704516614690988,0.19994390647065075,0.7409594164675468
+heterogeneous,weighted_round_robin,error_rate,2,0.0,0.0,0.0

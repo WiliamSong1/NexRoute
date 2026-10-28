@@ -1,0 +1,30 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.3'
+          cache: false
+      - run: test -z "$(gofmt -l .)"
+      - run: go vet ./...
+      - run: go test -race -count=1 -coverprofile=coverage.out ./...
+      - run: go test -run '^$' -bench . -benchmem ./internal/routing
+      - run: go build ./cmd/...
+      - run: python3 -m pip install -r benchmarks/requirements.txt
+      - run: python3 -m unittest discover -s benchmarks -p 'test_*.py'
+      - run: docker compose config --quiet
+      - run: docker build -t adaptive-lb:ci .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.out
+      - run: docker compose up --build -d --wait --wait-timeout 120
+      - run: python3 scripts/validate_stack.py --project adaptive-lb
+      - if: always()
+        run: docker compose down

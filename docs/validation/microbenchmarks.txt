@@ -1,0 +1,20 @@
+goos: darwin
+goarch: arm64
+pkg: adaptive-lb/internal/routing
+cpu: Apple M3
+BenchmarkRouting/round_robin-8         	521629417	         2.081 ns/op	       0 B/op	       0 allocs/op
+BenchmarkRouting/least_connections-8   	328886438	         3.588 ns/op	       0 B/op	       0 allocs/op
+BenchmarkRouting/weighted_round_robin-8         	11830746	       103.1 ns/op	       0 B/op	       0 allocs/op
+BenchmarkRouting/adaptive-8                     	22530133	        57.00 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	adaptive-lb/internal/routing	5.690s
+goos: darwin
+goarch: arm64
+pkg: adaptive-lb/internal/pool
+cpu: Apple M3
+BenchmarkPoolReservation/round_robin-8         	 3803450	       310.0 ns/op	     160 B/op	       2 allocs/op
+BenchmarkPoolReservation/least_connections-8   	 3860204	       306.6 ns/op	     160 B/op	       2 allocs/op
+BenchmarkPoolReservation/weighted_round_robin-8         	 3055114	       391.4 ns/op	     160 B/op	       2 allocs/op
+BenchmarkPoolReservation/adaptive-8                     	 2915594	       435.2 ns/op	     160 B/op	       2 allocs/op
+PASS
+ok  	adaptive-lb/internal/pool	6.441s

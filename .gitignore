@@ -1,0 +1,6 @@
+/bin/
+/benchmarks/results/
+/benchmarks/__pycache__/
+*.prof
+/coverage.out
+.venv/

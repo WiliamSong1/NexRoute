@@ -1,0 +1,57 @@
+{
+  "listen": ":8080",
+  "admin": "127.0.0.1:9090",
+  "algorithm": "adaptive",
+  "backends": [
+    {
+      "id": "a",
+      "url": "http://127.0.0.1:8081",
+      "weight": 1,
+      "capacity": 8
+    },
+    {
+      "id": "b",
+      "url": "http://127.0.0.1:8082",
+      "weight": 2,
+      "capacity": 32
+    },
+    {
+      "id": "c",
+      "url": "http://127.0.0.1:8083",
+      "weight": 3,
+      "capacity": 64
+    }
+  ],
+  "dial_timeout": "1s",
+  "header_timeout": "2s",
+  "idle_timeout": "60s",
+  "read_header_timeout": "5s",
+  "shutdown_timeout": "15s",
+  "health_interval": "1s",
+  "health_timeout": "500ms",
+  "health_path": "/health",
+  "health_failures": 2,
+  "health_successes": 2,
+  "circuit_failures": 3,
+  "circuit_cooldown": "3s",
+  "failure_statuses": [
+    500,
+    502,
+    503,
+    504
+  ],
+  "max_attempts": 2,
+  "retry_budget": "3s",
+  "max_in_flight": 4096,
+  "adaptive": {
+    "smoothing": 0.2,
+    "latency_reference": "50ms",
+    "stale_after": "10s",
+    "explore_every": 20,
+    "hysteresis": 0.05,
+    "latency": 1,
+    "active": 1,
+    "error": 4,
+    "pressure": 1
+  }
+}

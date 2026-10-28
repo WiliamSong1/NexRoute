@@ -1,0 +1,3 @@
+ Container adaptive-lb-validation-lb-1 Stopping 
+ Container adaptive-lb-validation-lb-1 Stopped 
+PASS: proxy requests, dashboard provisioning, datasource health, all PromQL panel expressions, backend outage/failover/recovery, and graceful drain.

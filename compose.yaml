@@ -1,0 +1,74 @@
+name: adaptive-lb
+x-backend: &backend
+  build: .
+  entrypoint: ["backend"]
+  environment:
+    SIM_TOKEN: ${SIM_TOKEN:-local-experiments-only}
+  init: true
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  healthcheck:
+    test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8081/health"]
+    interval: 2s
+    timeout: 1s
+    retries: 3
+services:
+  backend-a:
+    <<: *backend
+    command: ["-id", "a", "-listen", ":8081", "-admin", ":9081", "-latency", "10", "-jitter", "2", "-capacity", "8", "-seed", "1"]
+    ports: ["127.0.0.1:9081:9081"]
+  backend-b:
+    <<: *backend
+    command: ["-id", "b", "-listen", ":8081", "-admin", ":9081", "-latency", "30", "-jitter", "5", "-capacity", "32", "-seed", "2"]
+    ports: ["127.0.0.1:9082:9081"]
+  backend-c:
+    <<: *backend
+    command: ["-id", "c", "-listen", ":8081", "-admin", ":9081", "-latency", "60", "-jitter", "10", "-capacity", "64", "-seed", "3"]
+    ports: ["127.0.0.1:9083:9081"]
+  lb:
+    build: .
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      LB_ALGORITHM: ${LB_ALGORITHM:-adaptive}
+    ports: ["127.0.0.1:8080:8080", "127.0.0.1:9090:9090"]
+    depends_on:
+      backend-a: {condition: service_healthy}
+      backend-b: {condition: service_healthy}
+      backend-c: {condition: service_healthy}
+    stop_grace_period: 20s
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9090/ready"]
+      interval: 2s
+      timeout: 1s
+      retries: 5
+  prometheus:
+    image: prom/prometheus:v3.3.0
+    volumes: ["./deploy/prometheus.yml:/etc/prometheus/prometheus.yml:ro"]
+    ports: ["127.0.0.1:9091:9090"]
+    depends_on: [lb]
+  grafana:
+    image: grafana/grafana:12.0.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-local-experiments-only}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./deploy/grafana/dashboard.json:/var/lib/grafana/dashboards/adaptive-lb.json:ro
+    ports: ["127.0.0.1:3000:3000"]
+    depends_on: [prometheus]
+  k6:
+    image: grafana/k6:1.0.0
+    profiles: [load]
+    volumes: ["./benchmarks:/scripts:ro"]
+    environment:
+      TARGET: http://lb:8080
+      SUMMARY: /tmp/summary.json
+      DURATION: 30
+      RATE: 300
+    command: ["run", "/scripts/load.js"]
+    depends_on:
+      lb: {condition: service_healthy}
